@@ -29,10 +29,11 @@ _KEY = "calibration"
 
 def render() -> None:
     """Render the calibration + aging tab."""
-    st.subheader("Hot-spot calibration & insulation aging")
+    st.subheader("Hot-spot-kalibrering & isolasjonsaldring")
     st.caption(
-        "Calibrate the hot-spot factor so a given transformer stays below a target hot-spot limit under "
-        "nominal load, then run a simulation with the calibrated transformer and inspect insulation aging."
+        "Kalibrer hot-spot-faktoren slik at en gitt transformator holder seg under en målsatt hot-spot-grense "
+        "ved nominell last, kjør deretter en simulering med den kalibrerte transformatoren og inspiser "
+        "isolasjonsaldring."
     )
 
     power_presets = {
@@ -41,7 +42,7 @@ def render() -> None:
         if not preset.is_distribution
     }
     preset_label = st.selectbox(
-        "Preset (power transformers)",
+        "Forhåndsvalg (krafttransformatorer)",
         options=list(power_presets),
         key=f"{_KEY}.preset",
     )
@@ -53,7 +54,7 @@ def render() -> None:
     spec_scope = f"{_KEY}.{preset_label}"
 
     cooling_type = st.radio(
-        "Cooling type",
+        "Kjøletype",
         options=[CoolerType.ONAN, CoolerType.ONAF],
         index=[CoolerType.ONAN, CoolerType.ONAF].index(preset.default_cooling_type),
         format_func=lambda c: c.value,
@@ -63,7 +64,7 @@ def render() -> None:
 
     specs = forms.render_spec_form(preset.specs, key_prefix=spec_scope)
 
-    st.markdown("**Calibration parameters**")
+    st.markdown("**Kalibreringsparametere**")
     cols = st.columns(4)
     with cols[0]:
         hot_spot_limit = st.number_input(
@@ -83,7 +84,7 @@ def render() -> None:
         )
 
     insulation_label = st.selectbox(
-        "Paper insulation",
+        "Papirisolasjon",
         options=[PaperInsulationType.NORMAL, PaperInsulationType.THERMAL_UPGRADED],
         format_func=lambda p: p.value.replace("_", " ").title(),
         key=f"{_KEY}.insulation",
@@ -92,7 +93,7 @@ def render() -> None:
     profile = forms.render_profile_picker(specs, key_prefix=_KEY)
     initial_state = forms.render_initial_state_picker(key_prefix=_KEY)
 
-    if st.button("Calibrate & run", type="primary", key=f"{_KEY}.run"):
+    if st.button("Kalibrer & kjør", type="primary", key=f"{_KEY}.run"):
         try:
             uncalibrated = build_two_winding_transformer(preset, specs, cooling_type=cooling_type)
             original_hsf = float(uncalibrated.specs.hot_spot_fac)
@@ -115,7 +116,7 @@ def render() -> None:
             st.error(f"{type(exc).__name__}: {exc}")
             return
 
-        st.success("Calibration + simulation finished.")
+        st.success("Kalibrering + simulering fullført.")
 
         # Aging only makes sense for two-winding (Series) output here, which is what
         # build_two_winding_transformer produces. If the API ever returns a DataFrame
@@ -139,7 +140,7 @@ def render() -> None:
         cols[3].metric("Days aged over profile", f"{total_days_aged:.3f}")
 
         st.plotly_chart(plots.plot_temperatures(output, profile), width="stretch", key=f"{_KEY}.temperature_plot")
-        st.markdown("**Insulation aging rate**")
+        st.markdown("**Isolasjonsaldringstakt**")
         st.plotly_chart(
             plots.plot_aging(hot_spot_series, insulation_label),
             width="stretch",
