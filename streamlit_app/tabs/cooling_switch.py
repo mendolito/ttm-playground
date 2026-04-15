@@ -19,10 +19,10 @@ _KEY = "coolingswitch"
 
 def render() -> None:
     """Render the cooling-switch simulation tab."""
-    st.subheader("ONAN/ONAF cooling switch")
+    st.subheader("ONAN/ONAF-kjølebryter")
     st.caption(
-        "Simulate a power transformer that dynamically switches between ONAN and ONAF cooling modes — either driven "
-        "by a temperature threshold or by a fan schedule."
+        "Simuler en krafttransformator som dynamisk veksler mellom ONAN- og ONAF-kjøling — enten styrt "
+        "av en temperaturgrense eller en vifteplan."
     )
 
     onaf_presets = {
@@ -31,11 +31,11 @@ def render() -> None:
         if not preset.is_distribution and preset.default_cooling_type == CoolerType.ONAF
     }
     if not onaf_presets:
-        st.info("No ONAF power transformer presets available.")
+        st.info("Ingen ONAF-krafttransformator-forhåndsvalg tilgjengelig.")
         return
 
     preset_label = st.selectbox(
-        "Preset (ONAF power transformers)",
+        "Forhåndsvalg (ONAF-krafttransformatorer)",
         options=list(onaf_presets),
         key=f"{_KEY}.preset",
     )
@@ -58,7 +58,7 @@ def render() -> None:
 
     initial_state = forms.render_initial_state_picker(key_prefix=_KEY)
 
-    if st.button("Run simulation", type="primary", key=f"{_KEY}.run"):
+    if st.button("Kjør simulering", type="primary", key=f"{_KEY}.run"):
         try:
             transformer = build_two_winding_transformer(
                 preset,
@@ -75,7 +75,7 @@ def render() -> None:
             st.error(f"{type(exc).__name__}: {exc}")
             return
 
-        st.success("Simulation finished.")
+        st.success("Simulering fullført.")
         cols = st.columns(3)
         cols[0].metric("Max top-oil [°C]", f"{float(output.top_oil_temp_profile.max()):.1f}")
         cols[1].metric("Max hot-spot [°C]", f"{float(output.hot_spot_temp_profile.max()):.1f}")
