@@ -52,7 +52,7 @@ optional = true
 
 [tool.poetry.group.ui.dependencies]
 streamlit = "^1.50"
-plotly = "^5.23"
+plotly = "^6.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
