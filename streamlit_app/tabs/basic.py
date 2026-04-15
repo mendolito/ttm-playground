@@ -19,18 +19,19 @@ _KEY = "basic"
 
 def render() -> None:
     """Render the basic simulation tab."""
-    st.subheader("Basic simulation")
+    st.subheader("Grunnleggende simulering")
     st.caption(
-        "Configure a power or distribution transformer, pick a built-in load profile, and run the thermal model."
+        "Konfigurer en kraft- eller distribusjonstransformator, velg en innebygd lastprofil og kjør den "
+        "termiske modellen."
     )
 
     family = st.radio(
-        "Transformer family",
-        options=["Power", "Distribution"],
+        "Transformatortype",
+        options=["Kraft", "Distribusjon"],
         horizontal=True,
         key=f"{_KEY}.family",
     )
-    is_distribution = family == "Distribution"
+    is_distribution = family == "Distribusjon"
 
     matching_presets = {
         label: preset
@@ -38,7 +39,7 @@ def render() -> None:
         if preset.is_distribution == is_distribution
     }
     preset_label = st.selectbox(
-        "Preset",
+        "Forhåndsvalg",
         options=list(matching_presets),
         key=f"{_KEY}.preset",
     )
@@ -54,7 +55,7 @@ def render() -> None:
     cooling_type: CoolerType | None = None
     if not is_distribution:
         cooling_type = st.radio(
-            "Cooling type",
+            "Kjøletype",
             options=[CoolerType.ONAN, CoolerType.ONAF],
             index=[CoolerType.ONAN, CoolerType.ONAF].index(preset.default_cooling_type),
             format_func=lambda c: c.value,
@@ -66,7 +67,7 @@ def render() -> None:
     profile = forms.render_profile_picker(specs, key_prefix=_KEY)
     initial_state = forms.render_initial_state_picker(key_prefix=_KEY)
 
-    if st.button("Run simulation", type="primary", key=f"{_KEY}.run"):
+    if st.button("Kjør simulering", type="primary", key=f"{_KEY}.run"):
         try:
             transformer = build_two_winding_transformer(
                 preset,
@@ -82,7 +83,7 @@ def render() -> None:
             st.error(f"{type(exc).__name__}: {exc}")
             return
 
-        st.success("Simulation finished.")
+        st.success("Simulering fullført.")
         _render_metrics(output)
         st.plotly_chart(plots.plot_temperatures(output, profile), width="stretch", key=f"{_KEY}.result_plot")
 
