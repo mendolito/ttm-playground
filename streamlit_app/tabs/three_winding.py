@@ -20,11 +20,11 @@ _KEY = "threewinding"
 
 def render() -> None:
     """Render the three-winding simulation tab."""
-    st.subheader("Three-winding simulation")
-    st.caption("Three-winding transformers with per-winding hot-spot output.")
+    st.subheader("Tre-vikling-simulering")
+    st.caption("Tre-vikling-transformatorer med hot-spot-utdata per vikling.")
 
     preset_label = st.selectbox(
-        "Preset",
+        "Forhåndsvalg",
         options=list(THREE_WINDING_PRESETS),
         key=f"{_KEY}.preset",
     )
@@ -36,7 +36,7 @@ def render() -> None:
     spec_scope = f"{_KEY}.{preset_label}"
 
     cooling_type = st.radio(
-        "Cooling type",
+        "Kjøletype",
         options=[CoolerType.ONAN, CoolerType.ONAF],
         index=[CoolerType.ONAN, CoolerType.ONAF].index(preset.default_cooling_type),
         format_func=lambda c: c.value,
@@ -48,7 +48,7 @@ def render() -> None:
     profile = forms.render_three_winding_profile_picker(specs, key_prefix=_KEY)
     initial_state = forms.render_initial_state_picker(key_prefix=_KEY)
 
-    if st.button("Run simulation", type="primary", key=f"{_KEY}.run"):
+    if st.button("Kjør simulering", type="primary", key=f"{_KEY}.run"):
         try:
             transformer = build_three_winding_transformer(preset, specs, cooling_type=cooling_type)
             output = Model(
@@ -60,7 +60,7 @@ def render() -> None:
             st.error(f"{type(exc).__name__}: {exc}")
             return
 
-        st.success("Simulation finished.")
+        st.success("Simulering fullført.")
         _render_per_winding_metrics(output)
         st.plotly_chart(plots.plot_temperatures(output, profile), width="stretch", key=f"{_KEY}.result_plot")
 
