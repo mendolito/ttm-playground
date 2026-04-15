@@ -35,37 +35,39 @@ from streamlit_app.tabs import (  # noqa: E402
 def main() -> None:
     """Configure the page and dispatch to the tab renderers."""
     st.set_page_config(
-        page_title="Transformer thermal model",
+        page_title="Termisk transformatormodell",
         page_icon=":zap:",
         layout="wide",
     )
 
-    st.title("Transformer thermal model")
+    st.title("Termisk transformatormodell")
     st.caption(
-        "Interactive playground for the "
+        "Interaktiv lekeplass for biblioteket "
         "[`transformer-thermal-model`](https://github.com/alliander-opensource/transformer-thermal-model) "
-        "library — IEC 60076-7 thermal simulation for power, distribution, and three-winding transformers."
+        "— IEC 60076-7 termisk simulering for kraft-, distribusjons- og tre-vikling-transformatorer."
     )
 
     with st.sidebar:
-        st.header("About")
+        st.header("Om")
         st.markdown(
-            "This app wraps the four headline workflows of the library:\n\n"
-            "- **Basic simulation** — top-oil and hot-spot curves for a power or distribution transformer.\n"
-            "- **Three-winding** — per-winding hot-spot output for three-winding transformers.\n"
-            "- **Cooling switch** — dynamic ONAN/ONAF switching driven by temperature or a fan schedule.\n"
-            "- **Calibration & aging** — calibrate the hot-spot factor to a target limit and "
-            "estimate insulation aging.\n\n"
-            "Load and ambient profiles are built-in presets; each preset adapts to the transformer you pick."
+            "Denne appen samler de fire hovedarbeidsflytene i biblioteket:\n\n"
+            "- **Grunnleggende simulering** — topp-olje- og hot-spot-kurver for en kraft- eller "
+            "distribusjonstransformator.\n"
+            "- **Tre-vikling** — hot-spot-utdata per vikling for tre-vikling-transformatorer.\n"
+            "- **Kjølebryter** — dynamisk ONAN/ONAF-omkobling styrt av temperatur eller en vifteplan.\n"
+            "- **Kalibrering & aldring** — kalibrer hot-spot-faktoren mot en målgrense og "
+            "estimer isolasjonsaldring.\n\n"
+            "Last- og omgivelsesprofiler er innebygde forhåndsvalg; hvert forhåndsvalg tilpasser seg "
+            "transformatoren du velger."
         )
         st.markdown("---")
-        st.caption("Built with Streamlit + Plotly. Source: `streamlit_app/`.")
+        st.caption("Bygget med Streamlit + Plotly. Kildekode: `streamlit_app/`.")
 
     tab_labels = [
-        "Basic simulation",
-        "Three-winding",
-        "Cooling switch",
-        "Calibration & aging",
+        "Grunnleggende simulering",
+        "Tre-vikling",
+        "Kjølebryter",
+        "Kalibrering & aldring",
     ]
     tabs = st.tabs(tab_labels)
     renderers = (basic.render, three_winding.render, cooling_switch.render, calibration_aging.render)
