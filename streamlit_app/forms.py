@@ -107,7 +107,7 @@ def _collect_field_values(
                 format=field.format_str,
                 min_value=field.min_value,
                 key=f"{key_prefix}.{field.name}",
-                help="Leave blank to use the library default." if not field.required else None,
+                help="La stå tom for å bruke standardverdi fra biblioteket." if not field.required else None,
             )
         if value is None and field.required:
             # Streamlit returns None if the user clears a number_input; for required
@@ -126,11 +126,11 @@ def render_spec_form(
     The preset pre-fills the fields; any optional field the user clears is
     omitted so the library's IEC defaults take over.
     """
-    with st.expander("Override specifications", expanded=False):
-        losses = _collect_field_values(preset, _LOSS_FIELDS, key_prefix, "Losses")
-        thermals = _collect_field_values(preset, _THERMAL_FIELDS, key_prefix, "Thermal constants")
-        models = _collect_field_values(preset, _MODEL_FIELDS, key_prefix, "Model constants")
-        corrections = _collect_field_values(preset, _CORRECTION_FIELDS, key_prefix, "Corrections")
+    with st.expander("Overstyr spesifikasjoner", expanded=False):
+        losses = _collect_field_values(preset, _LOSS_FIELDS, key_prefix, "Tap")
+        thermals = _collect_field_values(preset, _THERMAL_FIELDS, key_prefix, "Termiske konstanter")
+        models = _collect_field_values(preset, _MODEL_FIELDS, key_prefix, "Modellkonstanter")
+        corrections = _collect_field_values(preset, _CORRECTION_FIELDS, key_prefix, "Korreksjoner")
 
     kwargs = {
         **{k: v for k, v in losses.items() if v is not None},
@@ -176,7 +176,7 @@ def _render_winding_form(
             step=0.05,
             min_value=0.0,
             key=f"{key_prefix}.hot_spot_fac",
-            help="Leave blank to use the library default.",
+            help="La stå tom for å bruke standardverdi fra biblioteket.",
         )
     cols = st.columns(2)
     with cols[0]:
@@ -186,7 +186,7 @@ def _render_winding_form(
             step=1.0,
             min_value=0.0,
             key=f"{key_prefix}.winding_oil_gradient",
-            help="Leave blank to use the library default.",
+            help="La stå tom for å bruke standardverdi fra biblioteket.",
         )
     with cols[1]:
         time_const_winding = st.number_input(
@@ -195,7 +195,7 @@ def _render_winding_form(
             step=1.0,
             min_value=0.0,
             key=f"{key_prefix}.time_const_winding",
-            help="Leave blank to use the library default.",
+            help="La stå tom for å bruke standardverdi fra biblioteket.",
         )
 
     optional = {
@@ -215,13 +215,13 @@ def render_three_winding_spec_form(
     key_prefix: str,
 ) -> UserThreeWindingTransformerSpecifications:
     """Render an override form for three-winding transformer specs."""
-    with st.expander("Override specifications", expanded=False):
-        st.markdown("**Windings**")
-        lv = _render_winding_form(preset.lv_winding, f"{key_prefix}.lv", "Low-voltage winding")
-        mv = _render_winding_form(preset.mv_winding, f"{key_prefix}.mv", "Medium-voltage winding")
-        hv = _render_winding_form(preset.hv_winding, f"{key_prefix}.hv", "High-voltage winding")
+    with st.expander("Overstyr spesifikasjoner", expanded=False):
+        st.markdown("**Viklinger**")
+        lv = _render_winding_form(preset.lv_winding, f"{key_prefix}.lv", "Lavspenningsvikling")
+        mv = _render_winding_form(preset.mv_winding, f"{key_prefix}.mv", "Mellomspenningsvikling")
+        hv = _render_winding_form(preset.hv_winding, f"{key_prefix}.hv", "Høyspenningsvikling")
 
-        st.markdown("**Inter-winding load losses [W]**")
+        st.markdown("**Tap mellom viklinger [W]**")
         cols = st.columns(3)
         with cols[0]:
             load_loss_hv_lv = st.number_input(
@@ -239,7 +239,7 @@ def render_three_winding_spec_form(
                 key=f"{key_prefix}.load_loss_mv_lv",
             )
 
-        st.markdown("**Common**")
+        st.markdown("**Felles**")
         cols = st.columns(3)
         with cols[0]:
             no_load_loss = st.number_input(
@@ -252,7 +252,7 @@ def render_three_winding_spec_form(
                 value=float(preset.amb_temp_surcharge) if preset.amb_temp_surcharge is not None else None,
                 step=1.0,
                 key=f"{key_prefix}.amb_temp_surcharge",
-                help="Leave blank to use the library default.",
+                help="La stå tom for å bruke standardverdi fra biblioteket.",
                 min_value=None,
             )
         with cols[2]:
@@ -262,7 +262,7 @@ def render_three_winding_spec_form(
                 step=1.0,
                 min_value=0.0,
                 key=f"{key_prefix}.top_oil_temp_rise",
-                help="Leave blank to use the library default.",
+                help="La stå tom for å bruke standardverdi fra biblioteket.",
             )
 
     kwargs: dict[str, object] = {
@@ -293,12 +293,12 @@ def render_profile_picker(
 ) -> InputProfile:
     """Render a selectbox over two-winding profile presets with a preview plot."""
     label = st.selectbox(
-        "Load profile",
+        "Lastprofil",
         options=list(PROFILE_PRESETS),
         key=f"{key_prefix}.profile_label",
     )
     profile = PROFILE_PRESETS[label](specs.nom_load_sec_side)
-    st.caption(f"{len(profile)} samples · step = {_describe_time_step(profile.time_step)}")
+    st.caption(f"{len(profile)} målinger · tidssteg = {_describe_time_step(profile.time_step)}")
     st.plotly_chart(plots.plot_load_profile(profile), width="stretch", key=f"{key_prefix}.profile_preview")
     return profile
 
@@ -309,7 +309,7 @@ def render_three_winding_profile_picker(
 ) -> ThreeWindingInputProfile:
     """Render a selectbox over three-winding profile presets with a preview plot."""
     label = st.selectbox(
-        "Load profile",
+        "Lastprofil",
         options=list(THREE_WINDING_PROFILE_PRESETS),
         key=f"{key_prefix}.profile_label",
     )
@@ -318,7 +318,7 @@ def render_three_winding_profile_picker(
         specs.mv_winding.nom_load,
         specs.hv_winding.nom_load,
     )
-    st.caption(f"{len(profile)} samples · step = {_describe_time_step(profile.time_step)}")
+    st.caption(f"{len(profile)} målinger · tidssteg = {_describe_time_step(profile.time_step)}")
     st.plotly_chart(plots.plot_load_profile(profile), width="stretch", key=f"{key_prefix}.profile_preview")
     return profile
 
@@ -326,7 +326,7 @@ def render_three_winding_profile_picker(
 def _describe_time_step(time_step: np.ndarray) -> str:
     # The first value is always 0 (prepend=first), so skip it.
     if len(time_step) < 2:
-        return "unknown"
+        return "ukjent"
     dt = float(time_step[1])
     return f"{dt:g} min"
 
@@ -339,14 +339,14 @@ def _describe_time_step(time_step: np.ndarray) -> str:
 def render_initial_state_picker(key_prefix: str) -> InitialState:
     """Radio over ColdStart / InitialLoad / InitialTopOilTemp."""
     mode = st.radio(
-        "Initial state",
-        options=["Cold start", "Initial load", "Initial top-oil temperature"],
+        "Starttilstand",
+        options=["Kaldstart", "Startlast", "Start topp-oljetemperatur"],
         horizontal=True,
         key=f"{key_prefix}.initial_state_mode",
     )
-    if mode == "Cold start":
+    if mode == "Kaldstart":
         return ColdStart()
-    if mode == "Initial load":
+    if mode == "Startlast":
         initial_load = st.number_input(
             "Initial load [A]",
             value=0.0,
@@ -388,10 +388,10 @@ def render_cooling_switch_form(
     the preset changes; it defaults to ``key_prefix`` for backward compatibility.
     """
     onan_prefix = onan_key_prefix if onan_key_prefix is not None else key_prefix
-    st.markdown("**ONAN/ONAF switch**")
+    st.markdown("**ONAN/ONAF-bryter**")
     mode = st.radio(
-        "Switch trigger",
-        options=["Temperature threshold", "Fan schedule"],
+        "Utløser for omkobling",
+        options=["Temperaturgrense", "Vifteplan"],
         horizontal=True,
         key=f"{key_prefix}.cooling_mode",
     )
@@ -400,7 +400,7 @@ def render_cooling_switch_form(
     temperature_threshold: CoolingSwitchConfig | None = None
     fan_on_param: np.ndarray | None = None
 
-    if mode == "Temperature threshold":
+    if mode == "Temperaturgrense":
         cols = st.columns(2)
         with cols[0]:
             activation = st.number_input(
@@ -415,7 +415,7 @@ def render_cooling_switch_form(
                 value=65.0,
                 step=1.0,
                 key=f"{key_prefix}.deactivation_temp",
-                help="Must be below the activation temperature.",
+                help="Må være lavere enn aktiveringstemperaturen.",
             )
         temperature_threshold = CoolingSwitchConfig(
             activation_temp=activation,
@@ -424,7 +424,7 @@ def render_cooling_switch_form(
     else:
         # Simple fan schedule: fans on between two fractions of the simulation
         on_start, on_end = st.slider(
-            "Fan-on window (as % of simulation)",
+            "Vifte-på-vindu (i % av simuleringen)",
             min_value=0,
             max_value=100,
             value=(50, 100),
@@ -437,7 +437,7 @@ def render_cooling_switch_form(
         fan_on_array[start_idx:end_idx] = True
         fan_on_param = fan_on_array
 
-    with st.expander("ONAN-mode parameters (when fans are off)", expanded=False):
+    with st.expander("ONAN-modus-parametere (når viftene er av)", expanded=False):
         cols = st.columns(3)
         with cols[0]:
             top_oil_temp_rise = st.number_input(
@@ -456,7 +456,7 @@ def render_cooling_switch_form(
             nom_load_sec_side = st.number_input(
                 "Nominal load [A]", value=float(onaf_specs.nom_load_sec_side), step=10.0,
                 min_value=0.0, key=f"{onan_prefix}.onan_nom_load",
-                help="Often lower than the ONAF nominal — fans enable a higher rating.",
+                help="Ofte lavere enn ONAF-merkeverdien — vifter gir høyere kapasitet.",
             )
         with cols[2]:
             time_const_windings = st.number_input(
