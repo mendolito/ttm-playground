@@ -41,13 +41,19 @@ def render() -> None:
     )
     preset = onaf_presets[preset_label]
 
-    specs = forms.render_spec_form(preset.specs, key_prefix=_KEY)
+    # Scope preset-dependent widget keys with the preset label — see the note
+    # in ``basic.py``; Streamlit ignores ``value=``/``index=`` for widgets with
+    # pre-existing session state, so stable keys would freeze the first preset.
+    spec_scope = f"{_KEY}.{preset_label}"
+
+    specs = forms.render_spec_form(preset.specs, key_prefix=spec_scope)
     profile = forms.render_profile_picker(specs, key_prefix=_KEY)
 
     cooling_switch_settings, fan_on_overlay = forms.render_cooling_switch_form(
         onaf_specs=specs,
         profile_length=len(profile),
         key_prefix=_KEY,
+        onan_key_prefix=spec_scope,
     )
 
     initial_state = forms.render_initial_state_picker(key_prefix=_KEY)

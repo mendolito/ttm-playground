@@ -44,6 +44,13 @@ def render() -> None:
     )
     preset = matching_presets[preset_label]
 
+    # Scope preset-dependent widget keys with the preset label so their default
+    # values re-initialise from the new preset when the user switches presets.
+    # (Streamlit ignores ``value=``/``index=`` once a widget with a given key
+    # has existing session state, so a stable key would freeze the first
+    # preset's values into every subsequent preset.)
+    spec_scope = f"{_KEY}.{preset_label}"
+
     cooling_type: CoolerType | None = None
     if not is_distribution:
         cooling_type = st.radio(
@@ -52,10 +59,10 @@ def render() -> None:
             index=[CoolerType.ONAN, CoolerType.ONAF].index(preset.default_cooling_type),
             format_func=lambda c: c.value,
             horizontal=True,
-            key=f"{_KEY}.cooling_type",
+            key=f"{spec_scope}.cooling_type",
         )
 
-    specs = forms.render_spec_form(preset.specs, key_prefix=_KEY)
+    specs = forms.render_spec_form(preset.specs, key_prefix=spec_scope)
     profile = forms.render_profile_picker(specs, key_prefix=_KEY)
     initial_state = forms.render_initial_state_picker(key_prefix=_KEY)
 

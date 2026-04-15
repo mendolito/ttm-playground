@@ -373,6 +373,7 @@ def render_cooling_switch_form(
     onaf_specs: UserTransformerSpecifications,
     profile_length: int,
     key_prefix: str,
+    onan_key_prefix: str | None = None,
 ) -> tuple[CoolingSwitchSettings, np.ndarray | None]:
     """Render the ONAN/ONAF switch form and return the settings + effective fan_on array.
 
@@ -380,7 +381,13 @@ def render_cooling_switch_form(
     schedule mode — useful for overlaying on the temperature plot. When the
     user picked the temperature-threshold mode it's ``None`` (the library
     computes the fan state internally).
+
+    ``key_prefix`` scopes the tab-level switch controls (mode, thresholds, fan
+    schedule). ``onan_key_prefix`` scopes the ONAN-parameter widgets, whose
+    defaults come from ``onaf_specs`` and therefore need to re-initialise when
+    the preset changes; it defaults to ``key_prefix`` for backward compatibility.
     """
+    onan_prefix = onan_key_prefix if onan_key_prefix is not None else key_prefix
     st.markdown("**ONAN/ONAF switch**")
     mode = st.radio(
         "Switch trigger",
@@ -435,34 +442,34 @@ def render_cooling_switch_form(
         with cols[0]:
             top_oil_temp_rise = st.number_input(
                 "Top-oil rise [K]", value=float(onaf_specs.top_oil_temp_rise or 50.0), step=1.0,
-                min_value=0.0, key=f"{key_prefix}.onan_top_oil_temp_rise",
+                min_value=0.0, key=f"{onan_prefix}.onan_top_oil_temp_rise",
             )
             load_loss = st.number_input(
                 "Load loss [W]", value=float(onaf_specs.load_loss), step=1000.0,
-                min_value=0.0, key=f"{key_prefix}.onan_load_loss",
+                min_value=0.0, key=f"{onan_prefix}.onan_load_loss",
             )
         with cols[1]:
             time_const_oil = st.number_input(
                 "Oil time constant [min]", value=float(onaf_specs.time_const_oil or 210.0), step=5.0,
-                min_value=0.0, key=f"{key_prefix}.onan_time_const_oil",
+                min_value=0.0, key=f"{onan_prefix}.onan_time_const_oil",
             )
             nom_load_sec_side = st.number_input(
                 "Nominal load [A]", value=float(onaf_specs.nom_load_sec_side), step=10.0,
-                min_value=0.0, key=f"{key_prefix}.onan_nom_load",
+                min_value=0.0, key=f"{onan_prefix}.onan_nom_load",
                 help="Often lower than the ONAF nominal — fans enable a higher rating.",
             )
         with cols[2]:
             time_const_windings = st.number_input(
                 "Winding time constant [min]", value=float(onaf_specs.time_const_windings or 10.0), step=1.0,
-                min_value=0.0, key=f"{key_prefix}.onan_time_const_windings",
+                min_value=0.0, key=f"{onan_prefix}.onan_time_const_windings",
             )
             winding_oil_gradient = st.number_input(
                 "Winding-oil gradient [K]", value=float(onaf_specs.winding_oil_gradient or 20.0), step=1.0,
-                min_value=0.0, key=f"{key_prefix}.onan_winding_oil_gradient",
+                min_value=0.0, key=f"{onan_prefix}.onan_winding_oil_gradient",
             )
         hot_spot_fac = st.number_input(
             "Hot-spot factor [-]", value=float(onaf_specs.hot_spot_fac or 1.2), step=0.05,
-            min_value=0.0, key=f"{key_prefix}.onan_hot_spot_fac",
+            min_value=0.0, key=f"{onan_prefix}.onan_hot_spot_fac",
         )
 
     onan_parameters = ONANParameters(

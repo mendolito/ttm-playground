@@ -47,16 +47,21 @@ def render() -> None:
     )
     preset = power_presets[preset_label]
 
+    # Scope preset-dependent widget keys with the preset label — see the note
+    # in ``basic.py``; Streamlit ignores ``value=``/``index=`` for widgets with
+    # pre-existing session state, so stable keys would freeze the first preset.
+    spec_scope = f"{_KEY}.{preset_label}"
+
     cooling_type = st.radio(
         "Cooling type",
         options=[CoolerType.ONAN, CoolerType.ONAF],
         index=[CoolerType.ONAN, CoolerType.ONAF].index(preset.default_cooling_type),
         format_func=lambda c: c.value,
         horizontal=True,
-        key=f"{_KEY}.cooling_type",
+        key=f"{spec_scope}.cooling_type",
     )
 
-    specs = forms.render_spec_form(preset.specs, key_prefix=_KEY)
+    specs = forms.render_spec_form(preset.specs, key_prefix=spec_scope)
 
     st.markdown("**Calibration parameters**")
     cols = st.columns(4)
