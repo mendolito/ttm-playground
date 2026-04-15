@@ -63,7 +63,7 @@ class ThreeWindingTransformerPreset:
 # with any of the profile presets below, not to represent any specific real
 # transformer nameplate.
 TRANSFORMER_PRESETS: dict[str, TransformerPreset] = {
-    "Typical 400 MVA power (ONAF)": TransformerPreset(
+    "Typisk 400 MVA krafttransformator (ONAF)": TransformerPreset(
         specs=UserTransformerSpecifications(
             load_loss=160_000,
             nom_load_sec_side=3000,
@@ -73,7 +73,7 @@ TRANSFORMER_PRESETS: dict[str, TransformerPreset] = {
         default_cooling_type=CoolerType.ONAF,
         is_distribution=False,
     ),
-    "Typical 100 MVA power (ONAN)": TransformerPreset(
+    "Typisk 100 MVA krafttransformator (ONAN)": TransformerPreset(
         specs=UserTransformerSpecifications(
             load_loss=40_000,
             nom_load_sec_side=1500,
@@ -83,7 +83,7 @@ TRANSFORMER_PRESETS: dict[str, TransformerPreset] = {
         default_cooling_type=CoolerType.ONAN,
         is_distribution=False,
     ),
-    "Typical 1 MVA distribution (ONAN)": TransformerPreset(
+    "Typisk 1 MVA distribusjonstransformator (ONAN)": TransformerPreset(
         specs=UserTransformerSpecifications(
             load_loss=10_000,
             nom_load_sec_side=1500,
@@ -96,7 +96,7 @@ TRANSFORMER_PRESETS: dict[str, TransformerPreset] = {
 
 
 THREE_WINDING_PRESETS: dict[str, ThreeWindingTransformerPreset] = {
-    "Typical three-winding (ONAF)": ThreeWindingTransformerPreset(
+    "Typisk tre-vikling-transformator (ONAF)": ThreeWindingTransformerPreset(
         specs=UserThreeWindingTransformerSpecifications(
             no_load_loss=20_000,
             amb_temp_surcharge=10,
@@ -210,10 +210,10 @@ def _diurnal_sinusoid_profile(nom_load: float) -> InputProfile:
 
 
 PROFILE_PRESETS: dict[str, ProfileFactory] = {
-    "IEC reference load (overloads, ~12 h)": _iec_reference_profile,
-    "Constant nominal load (1 week)": _constant_nominal_profile,
-    "Step load 50 % → 130 % (24 h)": _step_load_profile,
-    "Diurnal sinusoid (48 h)": _diurnal_sinusoid_profile,
+    "IEC-referanselast (overlast, ~12 t)": _iec_reference_profile,
+    "Konstant nominell last (1 uke)": _constant_nominal_profile,
+    "Trinnlast 50 % → 130 % (24 t)": _step_load_profile,
+    "Døgnsinusoid (48 t)": _diurnal_sinusoid_profile,
 }
 
 
@@ -256,8 +256,8 @@ def _three_winding_constant_profile(
 
 
 THREE_WINDING_PROFILE_PRESETS: dict[str, ThreeWindingProfileFactory] = {
-    "Diurnal sinusoid (48 h)": _three_winding_diurnal_profile,
-    "Constant nominal load (1 week)": _three_winding_constant_profile,
+    "Døgnsinusoid (48 t)": _three_winding_diurnal_profile,
+    "Konstant nominell last (1 uke)": _three_winding_constant_profile,
 }
 
 
