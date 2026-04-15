@@ -1,0 +1,6 @@
+# Used by Streamlit Community Cloud to install the Streamlit UI's dependencies.
+# The library itself (and its runtime deps) is installed editably from this repo.
+# Local development uses Poetry — see `poetry install --with ui` in the README.
+-e .
+streamlit>=1.50,<2
+plotly>=5.23,<7

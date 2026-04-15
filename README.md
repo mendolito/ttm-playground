@@ -67,6 +67,23 @@ For more examples, see the [documentation](https://alliander-opensource.github.i
 - **Hot-spot calibration**: Automatic calibration of hot-spot factors
 - **Aging calculations**: Analyze transformer aging
 
+## Web UI
+
+A Streamlit front end lives in [`streamlit_app/`](./streamlit_app) and covers all
+four headline workflows — basic simulation, three-winding, ONAN/ONAF cooling
+switch, and hot-spot calibration with insulation aging. Pick a preset
+transformer, a built-in load/ambient profile, and click Run.
+
+```bash
+poetry install --with ui
+poetry run streamlit run streamlit_app/app.py
+```
+
+The app is a self-contained Python package; it imports the library directly and
+requires no extra configuration. It can also be deployed to
+[Streamlit Community Cloud](https://share.streamlit.io/) by pointing at
+`streamlit_app/app.py` on the `main` branch.
+
 ## Documentation
 
 - [Getting Started](https://alliander-opensource.github.io/transformer-thermal-model/get_started/about/)

@@ -47,6 +47,13 @@ mkdocs-mermaid2-plugin = "^1.2.1"
 mkdocs-jupyter = "^0.26.0"
 matplotlib = "^3.10.3"
 
+[tool.poetry.group.ui]
+optional = true
+
+[tool.poetry.group.ui.dependencies]
+streamlit = "^1.50"
+plotly = "^5.23"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -137,7 +144,8 @@ addopts = [
   "--cov-report=xml",
   "--cov-report=term-missing",  # Coverage report incl missing lines in terminal
   "--doctest-modules",  # Run doctest to test examples in docstrings
-  "--ignore=mutants"  # Ignore the mutants folder
+  "--ignore=mutants",  # Ignore the mutants folder
+  "--ignore=streamlit_app"  # UI code lives outside the library package; skip doctest collection
 ]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL", "NUMBER"]
 
